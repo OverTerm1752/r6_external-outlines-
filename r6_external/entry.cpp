@@ -19,8 +19,8 @@ auto main( ) -> std::int32_t
 	const auto base = driver->get_module_base( "RainbowSix.exe" );
 
 	
-	const auto game_manager = __ROL8__(driver->read<std::uintptr_t>(retaddr >> 0x21) ^ (base + 0x72B2960) ^ 0x6A50F193CC31AFA3i64, 0);
-	
+	//const auto game_manager = __ROL8__(driver->read<std::uintptr_t>(retaddr >> 0x21) ^ (base + 0x72B2960) ^ 0x6A50F193CC31AFA3i64, 0);
+	const auto game_manager = __ROL8__(driver->read<std::uintptr_t>(retaddr >> 0x21) ^ (base + 0x72B2960) ^ 0x6A50F193CC31AFA3i64 ^ 0x7838897B8075ACD0i64 & 4, 0);
 
 	while ( true )
 	{
