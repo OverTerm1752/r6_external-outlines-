@@ -6,28 +6,38 @@
 #include <thread>
 #include <vector>
 #include <string>
-
 #include "driver.h"
 #include "utils.h"
 #include "ROL.h"
 
-auto retaddr = 0;
 
 auto main( ) -> std::int32_t
 {
-	driver->initialize( utils::get_process_id( L"RainbowSix.exe" ) );
-	const auto base = driver->get_module_base( "RainbowSix.exe" );
-
 	
-	//const auto game_manager = __ROL8__(driver->read<std::uintptr_t>(retaddr >> 0x21) ^ (base + 0x72B2960) ^ 0x6A50F193CC31AFA3i64, 0);
-	const auto game_manager = __ROL8__(driver->read<std::uintptr_t>(retaddr >> 0x21) ^ (base + 0x72B2960) ^ 0x6A50F193CC31AFA3i64 ^ 0x7838897B8075ACD0i64 & 4, 0);
+
+
+	driver->initialize(utils::get_process_id(L"RainbowSix.exe"));
+	const auto base = driver->get_module_base("RainbowSix.exe");
+	const auto retaddr = driver->get_module_base("RainbowSix.exe");
+
+
+
+	auto game_manager = __ROL8__(driver->read<uint64_t>(0x7559898), 0x1D);
+	auto v9 = ((game_manager << 0x28) & 0xFF00000000000000ui64 | ((unsigned __int64)((unsigned __int16)game_manager & 0xFF00) << 0x10) | (unsigned __int8)game_manager | (game_manager >> 0x18) & 0xFF00000000i64 | (game_manager >> 8) & 0xFF0000000000i64 | (game_manager << 8) & 0xFF000000000000i64 | (game_manager >> 0x10) & 0xFFFF00);
+	return game_manager;
 
 	while ( true )
 	{
-		// Entitylist
+
+
+
 		
-		const auto list = __ROL8__((driver->read<std::uintptr_t>(game_manager + 0x3F0) ^ 0xC) - 0x6F81A3C183B65EE6i64, 0x3E);
-		const auto count = static_cast<std::uintptr_t>(__ROL8__((driver->read<std::uintptr_t>(game_manager + 0x3F8) ^ 0xC) - 0x64F4D4C11A089B16i64, 0x3E)) & 0x3FFFFFFF;
+		
+
+
+		
+		const auto list = __ROL8__(driver->read<std::uintptr_t>(game_manager + 0x70), 0x29);
+		const auto count = __ROL8__(driver->read<std::uintptr_t>(game_manager + 0x78), 0x29) & 0x3FFFFFFF;
 
 		for ( auto i = 0u; i < count; ++i )
 		{
@@ -35,14 +45,22 @@ auto main( ) -> std::int32_t
 
 			
 			const auto entity = driver->read<std::uintptr_t>( list + ( i * 0x08 ) );
-			const auto pawn = ( ( driver->read<std::uintptr_t>(entity + 0xE8), 0x1C) ^ 0x1381EFE155D98A6Di64);
-			const auto actor = ( ( driver->read<std::uintptr_t>(pawn + 0x18i64 ) ^ 0x9ED30F7C034359D0ui64));
+			auto pawn = __ROL8__(driver->read<uint64_t>(entity + 0x100), 0x2C);
+			auto v59 = ((pawn ^ 0xA99F67CC88CC3242ui64) >> 0x18) & 0xFF000000 | ((pawn^ 0xA99F67CC88CC3242ui64) << 0x10) & 0xFF000000000000i64 | (unsigned __int8)((unsigned __int16)((pawn ^ 0xA99F67CC88CC3242ui64) >> 0x20) >> 8) | ((pawn ^ 0xA99F67CC88CC3242ui64) << 0x38) | ((pawn ^ 0xA99F67CC88CC3242ui64) >> 0x18) & 0xFF00000000i64 | ((pawn ^ 0xA99F67CC88CC3242ui64) << 0x20) & 0xFF0000000000i64 | (unsigned int)((pawn ^ 0xA99F67CC88CC3242ui64) >> 8);
+			const auto actor = ((driver->read<std::uintptr_t>  (pawn + +0x18), 0x1A));
+		
+
+
+
+		
 
 		
 			
 				
-				const auto glow_component = __ROL8__( driver->read<std::uintptr_t>(actor + 0x1C8) ^ 0xB24A745E678BCBB8ui64 - 0x7B, 0x3E); 
-				driver->write<std::uintptr_t>(glow_component + 0xB0, 0x20748000000300); //Glow overwrite idk about that shit
+				const auto glow_component = __ROL8__( driver->read<std::uintptr_t>(actor + 0x1C8) ^ 0x6971E32574178A69i64, 0x2B);
+				driver->write<std::uintptr_t>(glow_component + 0xB0, 0x20748000000300); //needs update
+
+
 				
 		}
 		
