@@ -47,7 +47,7 @@ auto main( ) -> std::int32_t
 			const auto entity = driver->read<std::uintptr_t>( list + ( i * 0x08 ) );
 			auto pawn = __ROL8__(driver->read<uint64_t>(entity + 0x100), 0x2C);
 			auto v59 = ((pawn ^ 0xA99F67CC88CC3242ui64) >> 0x18) & 0xFF000000 | ((pawn^ 0xA99F67CC88CC3242ui64) << 0x10) & 0xFF000000000000i64 | (unsigned __int8)((unsigned __int16)((pawn ^ 0xA99F67CC88CC3242ui64) >> 0x20) >> 8) | ((pawn ^ 0xA99F67CC88CC3242ui64) << 0x38) | ((pawn ^ 0xA99F67CC88CC3242ui64) >> 0x18) & 0xFF00000000i64 | ((pawn ^ 0xA99F67CC88CC3242ui64) << 0x20) & 0xFF0000000000i64 | (unsigned int)((pawn ^ 0xA99F67CC88CC3242ui64) >> 8);
-			const auto actor = ((driver->read<std::uintptr_t>  (pawn + +0x18), 0x1A));
+			const auto actor = ((driver->read<std::uintptr_t>  (pawn + 0x18) ^ 0x6F15C40F5776AD95i64 , 0x1A));
 		
 
 
